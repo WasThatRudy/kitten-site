@@ -1,36 +1,31 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# kitten-site
 
-## Getting Started
+Marketing landing page for [Kitten](https://github.com/pointblank-club/Kitten), an open-source (GPL-3.0) tool that safely rearranges disk partitions in place: one reboot, no live USB, journaled end to end, so a power cut mid-move loses nothing.
 
-First, run the development server:
+The page's centerpiece is an interactive "pull the plug" demo: drag a partition boundary, watch the chunked, journaled move run, cut the power at the worst moment, and watch the recovery console resume from the exact chunk it stopped at. The hero headline is the button.
+
+## Stack
+
+- Next.js (App Router) + TypeScript
+- Tailwind CSS v4 (design tokens in `app/globals.css`)
+- Plain Canvas 2D + a small state machine for the disk demo (`components/demo/PlugDemo.tsx`)
+- React Three Fiber for the migration teaser scene (lazy-loaded)
+- Native CSS scroll-driven animations for the "how it works" sequence
+- Fonts: Bricolage Grotesque (variable width/optical size) + JetBrains Mono
+
+## Develop
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deploy
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Static-friendly Next.js app; deploys as-is to Vercel or Netlify. No environment variables, no secrets, fully self-contained (fonts are self-hosted at build time by `next/font`).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Notes
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Brand palette: `#000`, `#F4F6F5`, and signal green `#00D86A` (sampled from the logo).
+- Copy is deliberately honest: Kitten is under active development; the page never claims encrypted transport or production readiness, and marks machine-to-machine migration as coming soon.
+- This repo is a standalone personal project intended to be transferred to the `pointblank-club` org later. Nothing org-specific is hardcoded beyond public repo links.
