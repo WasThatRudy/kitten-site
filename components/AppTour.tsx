@@ -13,28 +13,35 @@ const STEPS = [
   },
   {
     key: "arrange",
-    label: "Arrange",
+    label: "1  Arrange",
     src: "/screens/arrange.webp",
     caption:
       "Drag partitions, or drag an edge to resize. The disk as it is today and as it will be after the restart, side by side.",
   },
   {
     key: "plan",
-    label: "Plan",
+    label: "2  Plan",
     src: "/screens/plan.webp",
     caption:
       "Every step the recovery system will take, in order, with the real costs: data copied, chunk size, rough time.",
   },
   {
     key: "checks",
-    label: "Checks",
+    label: "3  Checks",
     src: "/screens/checks.webp",
     caption:
       "Twelve safety checks, from firmware mode to disk health. All of them pass, or Kitten writes nothing at all.",
   },
   {
+    key: "recovery",
+    label: "Recovery",
+    src: "/screens/recovery.png",
+    caption:
+      "The move itself runs here, before any operating system starts. This is the actual recovery screen, captured from a VM mid-move.",
+  },
+  {
     key: "done",
-    label: "Done",
+    label: "4  Done",
     src: "/screens/done.webp",
     caption:
       "Every moved byte read back and verified. The journal and your old partition table stay on the EFI partition.",
@@ -53,8 +60,9 @@ export function AppTour() {
         </h2>
         <p className="mt-5 text-[16px] leading-[1.65] text-dim">
           The app is a four-step wizard, and nothing is written until you have
-          seen the plan and every check is green. It even ships a built-in demo
-          disk, so you can rehearse the whole thing without touching hardware.
+          seen the plan and every check is green. The move itself runs at the
+          restart, on the recovery screen below. A built-in demo disk lets you
+          rehearse the whole thing without touching hardware.
         </p>
       </div>
 
@@ -76,7 +84,7 @@ export function AppTour() {
                   : "border-line text-dim hover:border-ink/40 hover:text-ink"
               }`}
             >
-              {i === 0 ? s.label : `${i}  ${s.label}`}
+              {s.label}
             </button>
           ))}
         </div>

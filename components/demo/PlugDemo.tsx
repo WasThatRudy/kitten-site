@@ -177,7 +177,10 @@ function DoneScreen({
         Every moved byte was read back and verified.
         {pulls > 0 && " The power cut in the middle changed nothing."}
       </p>
-      <div className="mt-5 flex flex-wrap gap-x-8 gap-y-2 text-[11px] sm:text-[12px]">
+      <p className="mt-2 text-[11px] text-faint">
+        [    6.623196] reboot: Restarting system
+      </p>
+      <div className="mt-4 flex flex-wrap gap-x-8 gap-y-2 text-[11px] sm:text-[12px]">
         <span>
           <span className="text-faint">data moved</span>{" "}
           <span className="text-ink">{movedGB} GB</span>
