@@ -1,37 +1,9 @@
-"use client";
-
-import dynamic from "next/dynamic";
-import { useEffect, useRef, useState } from "react";
-
-const ServerStack3D = dynamic(() => import("@/components/ServerStack3D"), {
-  ssr: false,
-  loading: () => null,
-});
+import { MigrationArt } from "@/components/MigrationArt";
 
 export function Migration() {
-  const ref = useRef<HTMLDivElement>(null);
-  const [mounted, setMounted] = useState(false);
-  const [animate, setAnimate] = useState(true);
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- browser-only init
-    setAnimate(!window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-    const io = new IntersectionObserver(
-      ([e]) => {
-        if (e.isIntersecting) {
-          setMounted(true);
-          io.disconnect();
-        }
-      },
-      { rootMargin: "400px 0px" }
-    );
-    if (ref.current) io.observe(ref.current);
-    return () => io.disconnect();
-  }, []);
-
   return (
     <section className="border-y border-line-faint">
-      <div className="mx-auto grid max-w-6xl items-center gap-8 px-5 py-20 sm:px-8 lg:grid-cols-[1fr_1fr] lg:gap-6 lg:py-10">
+      <div className="mx-auto grid max-w-6xl items-center gap-8 px-5 py-20 sm:px-8 lg:grid-cols-[1fr_1fr] lg:gap-6 lg:py-24">
         <div className="py-6">
           <p className="font-mono text-[12px] text-faint">
             $ kitten migrate --to new-hardware
@@ -48,8 +20,8 @@ export function Migration() {
             byte-for-byte copy. Same journal discipline, bigger jump.
           </p>
         </div>
-        <div ref={ref} className="h-[320px] w-full sm:h-[400px]">
-          {mounted && <ServerStack3D animate={animate} />}
+        <div className="rise-reveal py-6">
+          <MigrationArt />
         </div>
       </div>
     </section>
