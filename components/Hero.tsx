@@ -214,18 +214,22 @@ export function Hero() {
             <div className="mt-6 flex flex-wrap items-center gap-5">
               <Magnetic>
                 <a
-                  href={REPO}
-                  className="inline-block rounded-md bg-ink px-5 py-2.5 font-mono text-[13px] font-medium whitespace-nowrap text-bg transition-colors hover:bg-green"
+                  href="#download"
+                  className="inline-block rounded-md bg-green px-6 py-3 font-mono text-[13px] font-medium whitespace-nowrap text-bg transition-colors hover:bg-green-bright"
                 >
-                  read the source
+                  download for Linux
                 </a>
               </Magnetic>
-              <p className="font-mono text-[12px] text-faint">
-                free software, GPL-3.0.
-                <br className="hidden lg:block" /> read every line before it
-                touches a byte.
-              </p>
+              <a
+                href={REPO}
+                className="font-mono text-[13px] text-dim underline decoration-line underline-offset-4 transition-colors hover:text-ink"
+              >
+                read the source
+              </a>
             </div>
+            <p className="mt-4 font-mono text-[12px] text-faint">
+              free software, GPL-3.0. .deb, .rpm, or a static CLI.
+            </p>
           </div>
         </div>
 

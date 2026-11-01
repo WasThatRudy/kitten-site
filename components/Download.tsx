@@ -17,7 +17,10 @@ interface Release {
   assets: Asset[];
 }
 
-type State = { kind: "loading" } | { kind: "none" } | { kind: "ready"; release: Release };
+type State =
+  | { kind: "loading" }
+  | { kind: "none"; tagVersion?: string }
+  | { kind: "ready"; release: Release };
 
 const ROWS = [
   {
@@ -65,7 +68,19 @@ export function Download() {
             },
           });
         } else {
-          setState({ kind: "none" });
+          // no published release yet: a tag may still tell us the version
+          return fetch(
+            "https://api.github.com/repos/pointblank-club/Kitten/tags?per_page=1"
+          )
+            .then((r) => (r.ok ? r.json() : []))
+            .then((tags) => {
+              if (cancelled) return;
+              const tag = Array.isArray(tags) && tags[0]?.name;
+              setState({
+                kind: "none",
+                tagVersion: tag ? String(tag).replace(/^v/, "") : undefined,
+              });
+            });
         }
       })
       .catch(() => {
@@ -77,7 +92,8 @@ export function Download() {
   }, []);
 
   const release = state.kind === "ready" ? state.release : null;
-  const v = release?.version || "0.1.0";
+  const pendingVersion = state.kind === "none" ? state.tagVersion : undefined;
+  const v = release?.version ?? pendingVersion ?? "x.y.z";
 
   return (
     <section
@@ -113,8 +129,9 @@ export function Download() {
                 </a>
               </Magnetic>
               <p className="font-mono text-[12px] text-faint">
-                packages land with the first release. the lineup below is what
-                ships.
+                {pendingVersion
+                  ? `v${pendingVersion} is tagged. packages land when the release is published.`
+                  : "packages land with the first release. the lineup below is what ships."}
               </p>
             </div>
           )}
@@ -132,7 +149,7 @@ export function Download() {
               >
                 <span className="text-[15px] text-ink">{row.distro}</span>
                 <span className={`font-mono text-[12.5px] ${live ? "text-dim" : "text-faint"}`}>
-                  {row.file(release ? v : "x.y.z")}
+                  {row.file(v)}
                 </span>
                 <span className="sm:text-right">
                   <a
@@ -155,10 +172,10 @@ export function Download() {
         <div className="rise-reveal mt-10 grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
           <pre className="screen overflow-x-auto rounded-md border border-line-faint bg-[#030403] px-4 py-3.5 font-mono text-[12px] leading-[1.9] text-dim">
             <code>{`# Debian, Ubuntu, Mint, Pop!_OS
-sudo apt install ./kitten_${release ? v : "x.y.z"}_amd64.deb
+sudo apt install ./kitten_${v}_amd64.deb
 
 # Fedora, openSUSE
-sudo dnf install ./kitten-${release ? v : "x.y.z"}-1.x86_64.rpm
+sudo dnf install ./kitten-${v}-1.x86_64.rpm
 
 # verify what you downloaded
 sha256sum -c SHA256SUMS
