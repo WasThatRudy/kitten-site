@@ -895,7 +895,7 @@ export function PlugDemo({
             </div>
             <div
               ref={journalRef}
-              className="h-[92px] overflow-y-auto px-4 py-2 font-mono text-[10.5px] leading-[1.9]"
+              className="no-scrollbar h-[92px] overflow-y-auto px-4 py-2 font-mono text-[10.5px] leading-[1.9]"
             >
               {entries.length === 0 && (
                 <span className="text-faint">no entries yet</span>

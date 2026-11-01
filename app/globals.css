@@ -245,3 +245,12 @@ body {
   outline-offset: 3px;
   border-radius: 2px;
 }
+
+/* scrollable but no visible scrollbar */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
