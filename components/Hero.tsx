@@ -101,6 +101,13 @@ export function Hero() {
     false,
     false,
   ]);
+  const [settled, setSettled] = useState(false);
+
+  useEffect(() => {
+    if (!booted) return;
+    const t = setTimeout(() => setSettled(true), 1700);
+    return () => clearTimeout(t);
+  }, [booted]);
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -117,7 +124,7 @@ export function Hero() {
     <section
       className={`relative mx-auto max-w-7xl overflow-x-clip px-5 sm:px-8 ${
         booted ? "booted" : ""
-      }`}
+      } ${settled ? "settled" : ""}`}
     >
       {intro && <BootIntro onDone={finishBoot} />}
 

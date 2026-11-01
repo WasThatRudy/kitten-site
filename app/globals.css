@@ -168,6 +168,13 @@ body {
   animation-delay: var(--stamp-delay, 0s);
 }
 
+/* once the entrance has played, retire it so hover animations
+   can come and go without restarting the entrance */
+.settled .stamp,
+.settled .plug-stamp {
+  animation: none;
+}
+
 /* the clickable headline: power flicker on hover */
 .plug-line {
   font-variation-settings: "wdth" 63, "opsz" 70;
