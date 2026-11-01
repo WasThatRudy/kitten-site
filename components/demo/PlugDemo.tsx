@@ -765,7 +765,7 @@ export function PlugDemo({
           </span>
         </div>
 
-        <div className="grid md:grid-cols-[1fr_236px]">
+        <div>
           {/* canvas + handle */}
           <div className="relative select-none px-0 py-1" style={{ touchAction: "none" }}>
             <canvas ref={canvasRef} className="block" />
@@ -807,13 +807,13 @@ export function PlugDemo({
           </div>
 
           {/* journal ledger */}
-          <div className="flex min-h-[120px] flex-col border-t border-line-faint md:border-t-0 md:border-l">
+          <div className="flex flex-col border-t border-line-faint">
             <div className="border-b border-line-faint px-4 py-2 font-mono text-[10px] text-faint">
               journal @ lba 2048
             </div>
             <div
               ref={journalRef}
-              className="h-[120px] flex-1 overflow-y-auto px-4 py-2 font-mono text-[10.5px] leading-[1.9] md:h-auto md:max-h-[156px]"
+              className="h-[92px] overflow-y-auto px-4 py-2 font-mono text-[10.5px] leading-[1.9]"
             >
               {entries.length === 0 && (
                 <span className="text-faint">no entries yet</span>

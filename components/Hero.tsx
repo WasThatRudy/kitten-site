@@ -114,7 +114,7 @@ export function Hero() {
 
   return (
     <section
-      className={`relative mx-auto max-w-6xl overflow-x-clip px-5 sm:px-8 ${
+      className={`relative mx-auto max-w-7xl overflow-x-clip px-5 sm:px-8 ${
         booted ? "booted" : ""
       }`}
     >
@@ -149,74 +149,96 @@ export function Hero() {
         </nav>
       </header>
 
-      <div className="relative pt-10 sm:pt-14">
-        <h1>
-          <span
-            className="stamp block text-[clamp(1.5rem,3.2vw,2.4rem)] leading-none font-medium tracking-tight"
-            style={
-              {
-                "--stamp-delay": "0.18s",
-                fontVariationSettings: '"wdth" 97, "opsz" 60',
-              } as React.CSSProperties
-            }
-          >
-            Resize your disk.
-          </span>
-          <button
-            type="button"
-            onClick={() => demo.current?.runShow()}
-            className="plug-line plug-stamp mt-2 block text-left text-[clamp(4.2rem,13vw,11rem)] leading-[0.92] font-extrabold tracking-[-0.01em] uppercase"
-            style={{ "--stamp-delay": "0.32s" } as React.CSSProperties}
-            aria-label="Pull the plug: run the demo below and cut the power mid-move"
-          >
-            Pull the
-            <br />
-            plug<span className="text-green">.</span>
-          </button>
-          <span
-            className="stamp mt-4 block text-[clamp(1.6rem,3.6vw,2.6rem)] leading-tight font-normal text-green vf-hover"
-            style={
-              {
-                "--stamp-delay": "0.5s",
-                fontVariationSettings: '"wdth" 100, "opsz" 50',
-              } as React.CSSProperties
-            }
-          >
-            The cat doesn&apos;t flinch.
-          </span>
-        </h1>
+      <div className="grid gap-12 pt-8 pb-4 sm:pt-12 lg:grid-cols-[1fr_minmax(440px,565px)] lg:items-center lg:gap-14">
+        {/* left: the words */}
+        <div>
+          <h1>
+            <span
+              className="stamp block text-[clamp(1.4rem,2.6vw,2rem)] leading-none font-medium tracking-tight"
+              style={
+                {
+                  "--stamp-delay": "0.18s",
+                  fontVariationSettings: '"wdth" 97, "opsz" 60',
+                } as React.CSSProperties
+              }
+            >
+              Resize your disk.
+            </span>
+            <button
+              type="button"
+              onClick={() => demo.current?.runShow()}
+              className="plug-line plug-stamp mt-2 block text-left text-[clamp(3.6rem,12vw,8rem)] leading-[0.92] font-extrabold tracking-[-0.01em] uppercase"
+              style={{ "--stamp-delay": "0.32s" } as React.CSSProperties}
+              aria-label="Pull the plug: run the demo and cut the power mid-move"
+            >
+              Pull the
+              <br />
+              plug<span className="text-green">.</span>
+            </button>
+            <span
+              className="stamp mt-4 block text-[clamp(1.5rem,3vw,2.3rem)] leading-tight font-normal text-green vf-hover"
+              style={
+                {
+                  "--stamp-delay": "0.5s",
+                  fontVariationSettings: '"wdth" 100, "opsz" 50',
+                } as React.CSSProperties
+              }
+            >
+              The cat doesn&apos;t flinch.
+            </span>
+          </h1>
 
+          <div
+            className="stamp mt-9"
+            style={{ "--stamp-delay": "0.62s" } as React.CSSProperties}
+          >
+            <p className="max-w-[32rem] text-[15.5px] leading-[1.65] text-dim">
+              Kitten is a GPL-3.0 tool, written in Rust, that rearranges the
+              partitions on your disk in place. One reboot, no live USB. Every
+              step is journaled and every chunk verified, so a power cut at
+              any moment cannot cost you a byte: the move resumes exactly
+              where it stopped.
+            </p>
+            <div className="mt-6 flex flex-wrap items-center gap-5">
+              <Magnetic>
+                <a
+                  href={REPO}
+                  className="inline-block rounded-md bg-ink px-5 py-2.5 font-mono text-[13px] font-medium whitespace-nowrap text-black transition-colors hover:bg-green"
+                >
+                  read the source
+                </a>
+              </Magnetic>
+              <p className="font-mono text-[12px] text-faint">
+                under active development.
+                <br className="hidden lg:block" /> not yet for a disk you
+                can&apos;t lose.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* right: the product */}
         <div
-          className="stamp mt-10"
-          style={{ "--stamp-delay": "0.66s" } as React.CSSProperties}
+          id="demo"
+          className="stamp scroll-mt-24"
+          style={{ "--stamp-delay": "0.55s" } as React.CSSProperties}
         >
-          <p className="max-w-[34rem] text-[16.5px] leading-[1.65] text-dim">
-            Kitten is a GPL-3.0 tool, written in Rust, that rearranges the
-            partitions on your disk in place. One reboot, no live USB. Every
-            step is journaled and every chunk verified, so a power cut at any
-            moment cannot cost you a byte: the move resumes exactly where it
-            stopped.
-          </p>
-          <div className="mt-6 flex flex-wrap items-center gap-5">
-            <Magnetic>
-              <a
-                href={REPO}
-                className="inline-block rounded-md bg-ink px-5 py-2.5 font-mono text-[13px] font-medium whitespace-nowrap text-black transition-colors hover:bg-green"
-              >
-                read the source
-              </a>
-            </Magnetic>
-            <p className="font-mono text-[12px] text-faint">
-              under active development. not yet for a disk you can&apos;t lose.
+          <div className="mb-3 flex items-baseline justify-between gap-4">
+            <p className="font-mono text-[12px] text-dim">
+              shrink a partition, then cut the power mid-move.
+            </p>
+            <p className="hidden font-mono text-[11px] text-faint sm:block">
+              simulated 500 GB disk
             </p>
           </div>
+          <PlugDemo ringRef={ring} demoRef={demo} />
         </div>
       </div>
 
-      {/* sector ruler into the demo */}
+      {/* sector ruler, closing the hero */}
       <div
-        className="stamp mt-14 mb-2"
-        style={{ "--stamp-delay": "0.74s" } as React.CSSProperties}
+        className="stamp mt-10 mb-2"
+        style={{ "--stamp-delay": "0.7s" } as React.CSSProperties}
       >
         <div className="ruler w-full opacity-50" aria-hidden />
         <div className="mt-1 flex justify-between font-mono text-[10px] text-faint" aria-hidden>
@@ -224,22 +246,6 @@ export function Hero() {
           <span className="hidden sm:inline">0x3E80</span>
           <span>0x7D00</span>
         </div>
-      </div>
-
-      <div
-        id="demo"
-        className="stamp scroll-mt-24 pb-6"
-        style={{ "--stamp-delay": "0.8s" } as React.CSSProperties}
-      >
-        <div className="mb-3 flex items-baseline justify-between gap-4">
-          <p className="font-mono text-[12px] text-dim">
-            shrink a partition, then cut the power mid-move.
-          </p>
-          <p className="hidden font-mono text-[11px] text-faint sm:block">
-            simulated 500 GB disk
-          </p>
-        </div>
-        <PlugDemo ringRef={ring} demoRef={demo} />
       </div>
     </section>
   );
