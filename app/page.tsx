@@ -5,6 +5,7 @@ import { AppTour } from "@/components/AppTour";
 import { Guarantee } from "@/components/Guarantee";
 import { Migration } from "@/components/Migration";
 import { SafetySpec } from "@/components/SafetySpec";
+import { Download } from "@/components/Download";
 import { Footer } from "@/components/Footer";
 
 export default function Home() {
@@ -17,6 +18,7 @@ export default function Home() {
       <Guarantee />
       <Migration />
       <SafetySpec />
+      <Download />
       <Footer />
     </main>
   );

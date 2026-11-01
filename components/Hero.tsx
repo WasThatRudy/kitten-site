@@ -148,6 +148,9 @@ export function Hero() {
           >
             the guarantee
           </a>
+          <a href="#download" className="transition-colors hover:text-ink">
+            download
+          </a>
           <a
             href={REPO}
             className="text-ink underline decoration-green decoration-2 underline-offset-4 transition-colors hover:text-green"
