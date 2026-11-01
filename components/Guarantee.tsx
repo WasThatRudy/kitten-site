@@ -1,3 +1,4 @@
+import { BoltIcon } from "@/components/icons";
 export function Guarantee() {
   return (
     <section
@@ -30,7 +31,7 @@ export function Guarantee() {
             chunk 12 copy begins
           </div>
           <div className="font-bold text-ink">
-            <span className="inline-block w-20">t+0.0s</span>⚡ power lost
+            <span className="inline-block w-20">t+0.0s</span><BoltIcon /> power lost
           </div>
           <div className="text-faint">
             <span className="inline-block w-20 text-dim">on disk</span>

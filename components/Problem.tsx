@@ -1,3 +1,4 @@
+import { WarnIcon } from "@/components/icons";
 export function Problem() {
   return (
     <section className="mx-auto max-w-6xl px-5 py-24 sm:px-8 sm:py-32">
@@ -27,7 +28,7 @@ export function Problem() {
             </div>
             <div className="px-4 py-4 font-sans">
               <p className="text-[12.5px] leading-[1.5] font-bold">
-                ⚠ DO NOT turn off the computer.
+                <WarnIcon /> DO NOT turn off the computer.
               </p>
               <p className="mt-2 text-[12px] leading-[1.5]">
                 Cancelling this operation or losing power before it completes

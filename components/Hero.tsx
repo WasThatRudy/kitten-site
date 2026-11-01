@@ -124,8 +124,10 @@ export function Hero() {
         className="stamp flex items-center justify-between py-6"
         style={{ "--stamp-delay": "0.05s" } as React.CSSProperties}
       >
-        <span className="flex items-center gap-2.5 font-mono text-[13px] font-medium tracking-wide text-ink">
-          <span className="led inline-block h-[7px] w-[7px] rounded-full bg-green" />
+        <span className="flex items-center gap-3 font-mono text-[13px] font-medium tracking-wide text-ink">
+          <span className="w-9">
+            <HeroLogo ringRef={ring} />
+          </span>
           kitten
         </span>
         <nav className="flex items-center gap-6 font-mono text-[12px] text-dim">
@@ -148,23 +150,6 @@ export function Hero() {
       </header>
 
       <div className="relative pt-10 sm:pt-14">
-        {/* breathing emblem, sized to counterweight the headline */}
-        <div
-          className="stamp absolute top-20 right-0 hidden w-[270px] lg:block xl:top-14 xl:w-[345px]"
-          style={{ "--stamp-delay": "0.65s" } as React.CSSProperties}
-        >
-          <HeroLogo ringRef={ring} />
-        </div>
-
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/logo.png"
-          alt=""
-          aria-hidden
-          className="breathe stamp mb-8 w-24 lg:hidden"
-          style={{ "--stamp-delay": "0.1s" } as React.CSSProperties}
-        />
-
         <h1>
           <span
             className="stamp block text-[clamp(1.5rem,3.2vw,2.4rem)] leading-none font-medium tracking-tight"
@@ -200,13 +185,6 @@ export function Hero() {
             The cat doesn&apos;t flinch.
           </span>
         </h1>
-
-        <p
-          className="stamp mt-3 font-mono text-[11.5px] text-faint"
-          style={{ "--stamp-delay": "0.58s" } as React.CSSProperties}
-        >
-          the headline is a button. it runs the demo.
-        </p>
 
         <div
           className="stamp mt-10"

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Magnetic } from "@/components/Magnetic";
+import { BoltIcon } from "@/components/icons";
 
 /* ------------------------------------------------------------------ */
 /* model                                                               */
@@ -829,7 +830,7 @@ export function PlugDemo({
                   }
                 >
                   {e.kind === "ok" && <span className="text-green">✓ </span>}
-                  {e.kind === "loss" && <span className="text-ink">⚡ </span>}
+                  {e.kind === "loss" && <span className="text-ink"><BoltIcon /> </span>}
                   {e.text}
                 </div>
               ))}
@@ -870,7 +871,7 @@ export function PlugDemo({
                       : "cursor-not-allowed border border-line-faint text-faint"
                   }`}
                 >
-                  ⚡ pull the plug
+                  <BoltIcon /> pull the plug
                 </button>
               </Magnetic>
             )}
