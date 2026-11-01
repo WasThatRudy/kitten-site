@@ -72,37 +72,36 @@ function makeOrder(movingLeft: boolean): number[] {
 /* ------------------------------------------------------------------ */
 
 function consoleScript(sim: Sim): string[] {
-  const chunkIdx = sim.order[sim.flightPos] + 1;
-  const deltaGB = Math.abs(gb(sim.target) - gb(sim.split));
-  const dir = sim.target < sim.split ? "left" : "right";
-  const again = sim.pulls > 1;
+  const durable = sim.committed;
+  const next = Math.min(durable + 1, CHUNKS);
+  if (sim.pulls > 1) {
+    return [
+      "Kitten recovery: rearranging your disk.",
+      `Power lost again. Reading the journal … chunk ${durable} of ${CHUNKS} was durable.`,
+      `Resuming at chunk ${next}.`,
+    ];
+  }
   return [
-    "kitten recovery environment  (pre-OS, ~2 MB of Rust)",
-    again
-      ? "power lost again. reading the journal again."
-      : "no operating system yet. no USB stick. just the mover.",
-    "reading journal at lba 2048 ... found, intact",
-    "Kitten recovery: rearranging your disk ...",
-    `plan: move media ${deltaGB} GB ${dir}  (${CHUNKS} chunks)`,
-    `journal: ${sim.committed} of ${CHUNKS} chunks committed`,
-    `chunk ${chunkIdx}: copy started, never verified. recopying from source ... ok`,
-    `resuming at chunk ${chunkIdx} of ${CHUNKS}`,
-    again
-      ? "you can keep doing this all day. so can I."
-      : "If the power goes out, just turn the computer back on.",
+    "Kitten recovery: rearranging your disk.",
+    "If the power goes out, just turn the computer back on. Kitten will continue.",
+    "Working on /dev/nvme0n1.",
+    `Reading the journal … chunk ${durable} of ${CHUNKS} was durable.`,
+    `Resuming at chunk ${next}.`,
   ];
 }
 
 function RecoveryConsole({
   lines,
+  progress,
   instant,
   onDone,
 }: {
   lines: string[];
+  progress: number; // 0..1, durable fraction shown on the recovery progress bar
   instant: boolean;
   onDone: () => void;
 }) {
-  const [shown, setShown] = useState<string[]>(instant ? lines : []);
+  const [shown, setShown] = useState<number>(instant ? lines.length : 0);
   const doneRef = useRef(onDone);
   useEffect(() => {
     doneRef.current = onDone;
@@ -113,33 +112,20 @@ function RecoveryConsole({
       const t = setTimeout(() => doneRef.current(), 1400);
       return () => clearTimeout(t);
     }
-    let li = 0;
-    let ci = 0;
+    let i = 0;
     let cancelled = false;
     let timer: ReturnType<typeof setTimeout>;
     const tick = () => {
       if (cancelled) return;
-      if (li >= lines.length) {
-        timer = setTimeout(() => doneRef.current(), 700);
+      if (i >= lines.length) {
+        timer = setTimeout(() => doneRef.current(), 1000);
         return;
       }
-      ci++;
-      const at = li;
-      const partial = lines[at].slice(0, ci);
-      setShown((prev) => {
-        const next = prev.slice(0, at);
-        next[at] = partial;
-        return next;
-      });
-      if (ci >= lines[li].length) {
-        li++;
-        ci = 0;
-        timer = setTimeout(tick, 150);
-      } else {
-        timer = setTimeout(tick, 11);
-      }
+      i++;
+      setShown(i);
+      timer = setTimeout(tick, 480);
     };
-    timer = setTimeout(tick, 450);
+    timer = setTimeout(tick, 500);
     return () => {
       cancelled = true;
       clearTimeout(timer);
@@ -148,18 +134,80 @@ function RecoveryConsole({
 
   return (
     <div
-      className="absolute inset-0 z-10 bg-black px-5 py-4 font-mono text-[12px] leading-[1.75] text-ink/90 sm:text-[13px]"
+      className="absolute inset-0 z-10 flex flex-col justify-center bg-black px-5 font-mono text-[12px] leading-[1.9] text-ink/90 sm:px-7 sm:text-[13px]"
       role="log"
       aria-live="polite"
     >
-      {shown.map((l, i) => (
-        <div key={i} className={i === 3 || i === 8 ? "text-green" : undefined}>
+      {lines.slice(0, shown).map((l, i) => (
+        <div key={i}>
           {l}
-          {i === shown.length - 1 && (
-            <span className="cursor-blink ml-0.5 inline-block h-[1em] w-[0.6em] translate-y-[2px] bg-green" />
+          {i === shown - 1 && shown < lines.length && (
+            <span className="cursor-blink ml-0.5 inline-block h-[1em] w-[0.55em] translate-y-[2px] bg-ink/80" />
           )}
         </div>
       ))}
+      {shown >= lines.length && (
+        <div className="mt-4 flex items-center gap-3">
+          <div className="h-[6px] flex-1 overflow-hidden rounded-full bg-ink/15">
+            <div
+              className="h-full rounded-full bg-green transition-[width] duration-700"
+              style={{ width: `${Math.round(progress * 100)}%` }}
+            />
+          </div>
+          <span className="text-[11px] text-dim">
+            {Math.round(progress * 100)}%
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function DoneScreen({
+  movedGB,
+  pulls,
+}: {
+  movedGB: number;
+  pulls: number;
+}) {
+  return (
+    <div className="absolute inset-0 z-10 flex flex-col justify-center bg-black px-5 font-mono text-[12px] leading-relaxed sm:px-7 sm:text-[13px]">
+      <div className="flex items-center gap-2.5 text-[15px] text-green sm:text-[16px]">
+        <svg
+          viewBox="0 0 24 24"
+          className="h-[1.1em] w-[1.1em]"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden
+        >
+          <circle cx="12" cy="12" r="10" strokeWidth="1.8" />
+          <path d="M7.5 12.5 10.5 15.5 16.5 9.5" />
+        </svg>
+        Done. Restarting into your system.
+      </div>
+      <p className="mt-3 max-w-[44ch] text-dim">
+        Every moved byte was read back and verified.
+        {pulls > 0 && " The power cut in the middle changed nothing."}
+      </p>
+      <div className="mt-5 flex flex-wrap gap-x-8 gap-y-2 text-[11px] sm:text-[12px]">
+        <span>
+          <span className="text-faint">data moved</span>{" "}
+          <span className="text-ink">{movedGB} GB</span>
+        </span>
+        <span>
+          <span className="text-faint">chunks verified</span>{" "}
+          <span className="text-ink">
+            {CHUNKS}/{CHUNKS}
+          </span>
+        </span>
+        <span>
+          <span className="text-faint">power cuts survived</span>{" "}
+          <span className="text-ink">{pulls}</span>
+        </span>
+      </div>
     </div>
   );
 }
@@ -201,7 +249,11 @@ export function PlugDemo({
 
   const [phase, setPhase] = useState<Phase>("idle");
   const [entries, setEntries] = useState<Entry[]>([]);
-  const [consoleLines, setConsoleLines] = useState<string[] | null>(null);
+  const [consoleData, setConsoleData] = useState<{
+    lines: string[];
+    progress: number;
+  } | null>(null);
+  const [pullCount, setPullCount] = useState(0);
   const [cut, setCut] = useState(false);
   const [status, setStatus] = useState("drag the white boundary to plan a resize");
   const [reduced, setReduced] = useState(false);
@@ -256,7 +308,7 @@ export function PlugDemo({
         push(`journal  written to disk, ${CHUNKS} chunks pending`, "note");
       }, 650);
       later(() => {
-        setStatus("rebooting into the mover (no OS, no USB) ...");
+        setStatus("rebooting into the mover ...");
         push(dir === "right" ? "copy order  back to front (regions overlap)" : "copy order  front to back", "note");
       }, 1350);
       later(() => {
@@ -289,7 +341,8 @@ export function PlugDemo({
       s.attract = keepAttract;
       s.pulls = 0;
       setEntries([]);
-      setConsoleLines(null);
+      setConsoleData(null);
+      setPullCount(0);
       setCut(false);
       ringRef?.current?.set(0, false);
       go("idle");
@@ -301,15 +354,15 @@ export function PlugDemo({
   const finishMove = useCallback(() => {
     const s = sim.current;
     setStatus("all chunks verified. updating the partition table ...");
-    push("data  all 24 chunks in place", "note");
+    push(`data  all ${CHUNKS} chunks in place`, "note");
     later(() => {
       s.tableSnap = 0; // animates split -> target
-      push("table  updated last. old map retired.", "ok");
+      push("table  updated last", "ok");
     }, 500);
     later(() => {
       s.split = s.target;
       go("done");
-      setStatus(`${CHUNKS}/${CHUNKS} chunks verified. Every byte intact.`);
+      setStatus("");
       ringRef?.current?.set(1, true);
       later(() => ringRef?.current?.set(1, false), 2600);
       if (s.attract) {
@@ -328,24 +381,28 @@ export function PlugDemo({
     setCut(true);
     setStatus("");
     const chunkIdx = s.order[s.flightPos] + 1;
-    push(`POWER LOST  mid-copy of chunk ${chunkIdx}`, "loss");
+    push(`power lost  mid-copy of chunk ${chunkIdx}`, "loss");
+    setPullCount(s.pulls);
     later(() => {
       setCut(false);
-      setConsoleLines(consoleScript(s));
+      setConsoleData({
+        lines: consoleScript(s),
+        progress: s.committed / CHUNKS,
+      });
       go("console");
-      setStatus("power restored. reading the journal.");
+      setStatus("power restored.");
     }, reduced ? 500 : 1300);
   }, [go, later, push, reduced]);
 
   const onConsoleDone = useCallback(() => {
     const s = sim.current;
-    setConsoleLines(null);
+    setConsoleData(null);
     const chunkIdx = s.order[s.flightPos] + 1;
     push(`#${String(chunkIdx).padStart(2, "0")}  recopied from source, verified`, "ok");
     s.interrupted = true;
     s.flight = -VERIFY * 1.6;
     go("moving");
-    setStatus(`resumed at chunk ${chunkIdx} of ${CHUNKS}, exactly where it stopped`);
+    setStatus(`resumed at chunk ${chunkIdx} of ${CHUNKS}.`);
   }, [go, push]);
 
   /* ---------------- attract mode (auto-plays once) ---------------- */
@@ -467,7 +524,7 @@ export function PlugDemo({
     else {
       s.handle = s.split;
       go("idle");
-      setStatus("too small to bother. drag at least 20 GB.");
+      setStatus("drag at least 20 GB to plan a move.");
     }
   }, [go, startPlan]);
 
@@ -593,14 +650,31 @@ export function PlugDemo({
       ctx.roundRect(bx + 0.5, by + 0.5, bw - 1, bh - 1, 7);
       ctx.stroke();
 
-      /* region tints */
+      /* partition segments: faint fill, the growing one in brand green */
       const splitNow =
         s.phase === "done" || s.tableSnap < 1
           ? s.split + (s.target - s.split) * (s.phase === "done" ? 1 : 1 - Math.pow(1 - s.tableSnap, 3))
           : s.split;
-      ctx.fillStyle = "rgba(244,246,245,0.045)";
+      const planActive =
+        (s.phase === "dragging" || s.phase === "planning" || s.phase === "moving" ||
+          s.phase === "console" || s.phase === "cut") &&
+        Math.abs(s.handle - s.split) > 0.004;
+      const planX = X(s.phase === "dragging" ? s.handle : s.target);
+      const planSplit = s.phase === "dragging" ? s.handle : s.target;
+      const growing: "system" | "media" | null = planActive
+        ? planSplit < s.split
+          ? "media"
+          : "system"
+        : null;
+      ctx.fillStyle =
+        growing === "system" ? "rgba(0,216,106,0.08)" : "rgba(244,246,245,0.045)";
       ctx.beginPath();
       ctx.roundRect(bx, by, splitNow * bw, bh, [7, 0, 0, 7]);
+      ctx.fill();
+      ctx.fillStyle =
+        growing === "media" ? "rgba(0,216,106,0.08)" : "rgba(244,246,245,0.02)";
+      ctx.beginPath();
+      ctx.roundRect(bx + splitNow * bw, by, bw - splitNow * bw, bh, [0, 7, 7, 0]);
       ctx.fill();
 
       /* system used cells */
@@ -649,11 +723,6 @@ export function PlugDemo({
       }
 
       /* planned boundary (dashed green) */
-      const planActive =
-        (s.phase === "dragging" || s.phase === "planning" || s.phase === "moving" ||
-          s.phase === "console" || s.phase === "cut") &&
-        Math.abs(s.handle - s.split) > 0.004;
-      const planX = X(s.phase === "dragging" ? s.handle : s.target);
       if (planActive) {
         ctx.strokeStyle = GREEN;
         ctx.lineWidth = 2;
@@ -679,8 +748,16 @@ export function PlugDemo({
       ctx.fillStyle = "rgba(150,160,154,0.95)";
       ctx.textBaseline = "alphabetic";
       const labSplit = s.phase === "dragging" ? s.handle : planActive ? s.target : splitNow;
-      ctx.fillText(`system  ${gb(labSplit)} GB`, bx + 2, by - 16);
-      const mediaLabel = `media  ${gb(1 - labSplit)} GB`;
+      const wide = bw > 500;
+      const sysLabel = wide
+        ? `System  ${gb(labSplit)} GB  (${gb(SYS_USED)} GB used)`
+        : `System  ${gb(labSplit)} GB`;
+      const mediaLabel = wide
+        ? `Media  ${gb(1 - labSplit)} GB  (${gb(MEDIA_USED)} GB used)`
+        : `Media  ${gb(1 - labSplit)} GB`;
+      ctx.fillStyle = growing === "system" ? GREEN : "rgba(150,160,154,0.95)";
+      ctx.fillText(sysLabel, bx + 2, by - 16);
+      ctx.fillStyle = growing === "media" ? GREEN : "rgba(150,160,154,0.95)";
       ctx.fillText(mediaLabel, bx + bw - ctx.measureText(mediaLabel).width - 2, by - 16);
       ctx.fillStyle = "rgba(150,160,154,0.6)";
       ctx.fillText("0", bx, by + bh + 24);
@@ -753,7 +830,7 @@ export function PlugDemo({
         {/* chrome */}
         <div className="flex items-center justify-between border-b border-line-faint px-4 py-2.5 sm:px-5">
           <span className="font-mono text-[11px] text-dim">
-            kitten plan <span className="text-faint">/dev/vda</span>
+            kitten <span className="text-faint">/dev/nvme0n1</span>
           </span>
           <span className="flex items-center gap-2 font-mono text-[10px] text-faint">
             {powered ? "power" : "power lost"}
@@ -797,12 +874,17 @@ export function PlugDemo({
               )}
             </div>
 
-            {consoleLines && (
+            {consoleData && (
               <RecoveryConsole
-                lines={consoleLines}
+                lines={consoleData.lines}
+                progress={consoleData.progress}
                 instant={reduced}
                 onDone={onConsoleDone}
               />
+            )}
+
+            {done && (
+              <DoneScreen movedGB={gb(MEDIA_USED)} pulls={pullCount} />
             )}
           </div>
 
@@ -842,7 +924,6 @@ export function PlugDemo({
         <div className="flex flex-col gap-3 border-t border-line-faint px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5">
           <div className="min-h-[2.6em] font-mono text-[11.5px] leading-relaxed text-dim sm:min-h-0">
             <span aria-live="polite">{status}</span>
-            {done && <div className="text-green">the cat didn&apos;t wake up.</div>}
           </div>
           <div className="flex shrink-0 items-center gap-3">
             {done ? (
