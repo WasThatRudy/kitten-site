@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -44,6 +44,12 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: "#000000",
+};
+
+const themeInit = `(function(){try{var t=localStorage.getItem("kitten-theme");if(t!=="light"&&t!=="dark"){t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"}document.documentElement.dataset.theme=t}catch(e){}})()`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -52,6 +58,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${bricolage.variable} ${jetbrains.variable}`}>
       <body className="grain antialiased">
+        <script dangerouslySetInnerHTML={{ __html: themeInit }} />
         {children}
       </body>
     </html>

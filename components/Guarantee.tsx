@@ -3,7 +3,7 @@ export function Guarantee() {
   return (
     <section
       id="guarantee"
-      className="border-y border-line-faint bg-[#020302]"
+      className="border-y border-line-faint bg-wash"
     >
       <div className="mx-auto max-w-6xl scroll-mt-16 px-5 py-24 sm:px-8 sm:py-36">
         <div className="rise-reveal max-w-[46rem]">
@@ -21,7 +21,7 @@ export function Guarantee() {
           </p>
         </div>
 
-        <div className="rise-reveal mt-14 max-w-[40rem] overflow-x-auto rounded-lg border border-line-faint bg-black px-5 py-4 font-mono text-[12px] leading-[2.1] sm:px-6">
+        <div className="screen rise-reveal mt-14 max-w-[40rem] overflow-x-auto rounded-lg border border-line-faint bg-black px-5 py-4 font-mono text-[12px] leading-[2.1] sm:px-6">
           <div className="text-faint">
             <span className="inline-block w-20 text-dim">t−2.1s</span>
             chunk 11 copied, verified, committed

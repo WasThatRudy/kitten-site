@@ -125,7 +125,7 @@ function RecoveryConsole({
       setShown(i);
       timer = setTimeout(tick, 480);
     };
-    timer = setTimeout(tick, 500);
+    timer = setTimeout(tick, 200);
     return () => {
       cancelled = true;
       clearTimeout(timer);
@@ -817,28 +817,15 @@ export function PlugDemo({
         x
       </span>
 
-      {/* full-viewport power cut */}
-      {cut && (
-        <div className="fixed inset-0 z-[100] bg-black" aria-hidden>
-          {!reduced && (
-            <div className="crt-line absolute top-1/2 left-0 h-[2px] w-full bg-ink/90" />
-          )}
-        </div>
-      )}
-
-      <div className="overflow-hidden rounded-xl border border-line bg-[#030403]">
+      <div className="monitor">
+        <div className="screen relative overflow-hidden rounded-[10px] bg-[#030403]">
         {/* chrome */}
         <div className="flex items-center justify-between border-b border-line-faint px-4 py-2.5 sm:px-5">
           <span className="font-mono text-[11px] text-dim">
             kitten <span className="text-faint">/dev/nvme0n1</span>
           </span>
-          <span className="flex items-center gap-2 font-mono text-[10px] text-faint">
-            {powered ? "power" : "power lost"}
-            <span
-              className={`h-[7px] w-[7px] rounded-full transition-colors duration-200 ${
-                powered ? "led bg-green" : "led-off bg-faint/40"
-              }`}
-            />
+          <span className="font-mono text-[10px] text-faint">
+            journaled move
           </span>
         </div>
 
@@ -957,6 +944,29 @@ export function PlugDemo({
               </Magnetic>
             )}
           </div>
+        </div>
+
+        {/* the screen loses power */}
+        {cut && (
+          <div className="absolute inset-0 z-30 bg-black" aria-hidden>
+            {!reduced && (
+              <div className="crt-line absolute top-1/2 left-0 h-[2px] w-full bg-ink/90" />
+            )}
+          </div>
+        )}
+        </div>
+
+        {/* bezel chin */}
+        <div className="monitor-chin font-mono text-[9.5px] tracking-[0.08em] text-[#5f6a63]">
+          <span>KT-500</span>
+          <span className="flex items-center gap-2">
+            {powered ? "power" : "standby"}
+            <span
+              className={`h-[7px] w-[7px] rounded-full transition-colors duration-300 ${
+                powered ? "led" : "led-standby"
+              }`}
+            />
+          </span>
         </div>
       </div>
     </div>

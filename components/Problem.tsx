@@ -55,7 +55,7 @@ export function Problem() {
 
         {/* the kitten way */}
         <div className="rise-reveal flex flex-col">
-          <div className="mx-auto flex w-full max-w-[440px] flex-1 flex-col justify-center rounded-lg border border-line bg-[#030403] px-5 py-6 font-mono text-[13px] leading-[2]">
+          <div className="screen mx-auto flex w-full max-w-[440px] flex-1 flex-col justify-center rounded-lg border border-line bg-[#030403] px-5 py-6 font-mono text-[13px] leading-[2]">
             <p className="text-dim">$ kitten apply</p>
             <p className="text-ink">rearranging your disk ...</p>
             <p className="text-green">

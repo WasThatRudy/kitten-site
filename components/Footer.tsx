@@ -17,13 +17,13 @@ export function Footer() {
           <Magnetic>
             <a
               href={REPO}
-              className="inline-block rounded-md bg-green px-6 py-3 font-mono text-[14px] font-medium text-black transition-colors hover:bg-green-bright"
+              className="inline-block rounded-md bg-green px-6 py-3 font-mono text-[14px] font-medium text-bg transition-colors hover:bg-green-bright"
             >
               github.com/pointblank-club/Kitten
             </a>
           </Magnetic>
         </div>
-        <pre className="mt-8 overflow-x-auto rounded-md border border-line-faint bg-[#030403] px-4 py-3 font-mono text-[12px] leading-relaxed text-dim">
+        <pre className="screen mt-8 overflow-x-auto rounded-md border border-line-faint bg-[#030403] px-4 py-3 font-mono text-[12px] leading-relaxed text-dim">
           <code>{`git clone https://github.com/pointblank-club/Kitten
 cd Kitten && cargo build --release   # then point it at a disk you can lose`}</code>
         </pre>

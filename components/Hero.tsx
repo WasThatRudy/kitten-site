@@ -8,6 +8,7 @@ import {
 } from "@/components/demo/PlugDemo";
 import { HeroLogo } from "@/components/HeroLogo";
 import { Magnetic } from "@/components/Magnetic";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const REPO = "https://github.com/pointblank-club/Kitten";
 
@@ -74,7 +75,7 @@ function BootIntro({ onDone }: { onDone: () => void }) {
 
   return (
     <div
-      className={`fixed inset-0 z-[90] bg-black px-6 py-6 transition-opacity duration-300 sm:px-10 sm:py-8 ${
+      className={`screen fixed inset-0 z-[90] bg-black px-6 py-6 transition-opacity duration-300 sm:px-10 sm:py-8 ${
         fading ? "opacity-0" : "opacity-100"
       }`}
       aria-hidden
@@ -146,6 +147,7 @@ export function Hero() {
           >
             GitHub
           </a>
+          <ThemeToggle />
         </nav>
       </header>
 
@@ -203,7 +205,7 @@ export function Hero() {
               <Magnetic>
                 <a
                   href={REPO}
-                  className="inline-block rounded-md bg-ink px-5 py-2.5 font-mono text-[13px] font-medium whitespace-nowrap text-black transition-colors hover:bg-green"
+                  className="inline-block rounded-md bg-ink px-5 py-2.5 font-mono text-[13px] font-medium whitespace-nowrap text-bg transition-colors hover:bg-green"
                 >
                   read the source
                 </a>
