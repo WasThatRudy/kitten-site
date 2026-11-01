@@ -48,7 +48,7 @@ export function Migration() {
             byte-for-byte copy. Same journal discipline, bigger jump.
           </p>
           <p className="mt-4 font-mono text-[12px] text-faint">
-            in development. the cat refuses to be rushed.
+            in development, not released yet.
           </p>
         </div>
         <div ref={ref} className="h-[320px] w-full sm:h-[400px]">

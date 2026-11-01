@@ -13,7 +13,7 @@ const REPO = "https://github.com/pointblank-club/Kitten";
 
 const BOOT_LINES = [
   "kitten bios v0.4",
-  "disk /dev/vda: 500 GB, 2 partitions, 0 regrets",
+  "disk /dev/vda: 500 GB, gpt, 2 partitions",
   "journal: clean",
   "cat: asleep",
   "ok.",
@@ -120,22 +120,6 @@ export function Hero() {
     >
       {intro && <BootIntro onDone={finishBoot} />}
 
-      {/* giant background crescent */}
-      <svg
-        viewBox="0 0 760 760"
-        className="pointer-events-none absolute -top-[22vmin] -right-[30vmin] -z-10 h-[110vmin] w-[110vmin]"
-        aria-hidden
-      >
-        <path
-          d="M 653.6 211 A 324 324 0 1 0 125 581"
-          fill="none"
-          stroke="#00d86a"
-          strokeWidth="30"
-          strokeLinecap="round"
-          opacity="0.07"
-        />
-      </svg>
-
       <header
         className="stamp flex items-center justify-between py-6"
         style={{ "--stamp-delay": "0.05s" } as React.CSSProperties}
@@ -164,9 +148,9 @@ export function Hero() {
       </header>
 
       <div className="relative pt-10 sm:pt-14">
-        {/* breathing emblem, tucked against the arc */}
+        {/* breathing emblem, sized to counterweight the headline */}
         <div
-          className="stamp absolute -top-2 right-0 hidden w-[200px] lg:block xl:w-[240px]"
+          className="stamp absolute top-20 right-0 hidden w-[270px] lg:block xl:top-14 xl:w-[345px]"
           style={{ "--stamp-delay": "0.65s" } as React.CSSProperties}
         >
           <HeroLogo ringRef={ring} />
@@ -177,17 +161,11 @@ export function Hero() {
           src="/logo.png"
           alt=""
           aria-hidden
-          className="breathe stamp mb-6 w-20 lg:hidden"
+          className="breathe stamp mb-8 w-24 lg:hidden"
           style={{ "--stamp-delay": "0.1s" } as React.CSSProperties}
         />
-        <p
-          className="stamp font-mono text-[12px] text-dim"
-          style={{ "--stamp-delay": "0.1s" } as React.CSSProperties}
-        >
-          open source / GPL-3.0 / written in Rust
-        </p>
 
-        <h1 className="mt-6">
+        <h1>
           <span
             className="stamp block text-[clamp(1.5rem,3.2vw,2.4rem)] leading-none font-medium tracking-tight"
             style={
@@ -227,7 +205,7 @@ export function Hero() {
           className="stamp mt-3 font-mono text-[11.5px] text-faint"
           style={{ "--stamp-delay": "0.58s" } as React.CSSProperties}
         >
-          yes, the big words are a button. go on.
+          the headline is a button. it runs the demo.
         </p>
 
         <div
@@ -235,10 +213,11 @@ export function Hero() {
           style={{ "--stamp-delay": "0.66s" } as React.CSSProperties}
         >
           <p className="max-w-[34rem] text-[16.5px] leading-[1.65] text-dim">
-            Kitten rearranges the partitions on your disk in place. One
-            reboot, no live USB, and a power cut at any moment cannot cost
-            you a byte: every step is journaled, every chunk verified, and
-            the move resumes exactly where it stopped.
+            Kitten is a GPL-3.0 tool, written in Rust, that rearranges the
+            partitions on your disk in place. One reboot, no live USB. Every
+            step is journaled and every chunk verified, so a power cut at any
+            moment cannot cost you a byte: the move resumes exactly where it
+            stopped.
           </p>
           <div className="mt-6 flex flex-wrap items-center gap-5">
             <Magnetic>
@@ -276,11 +255,10 @@ export function Hero() {
       >
         <div className="mb-3 flex items-baseline justify-between gap-4">
           <p className="font-mono text-[12px] text-dim">
-            this is the product. shrink a partition, then cut the power
-            mid-move.
+            shrink a partition, then cut the power mid-move.
           </p>
           <p className="hidden font-mono text-[11px] text-faint sm:block">
-            simulated disk. the real one treats yours with the same paranoia.
+            simulated 500 GB disk
           </p>
         </div>
         <PlugDemo ringRef={ring} demoRef={demo} />

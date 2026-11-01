@@ -28,8 +28,7 @@ export function HeroLogo({ ringRef }: { ringRef: React.RefObject<RingHandle | nu
   }, [ringRef]);
 
   return (
-    <div className="relative aspect-square w-full max-w-[340px]">
-      <div className="bloom absolute -inset-10" aria-hidden />
+    <div className="relative aspect-square w-full">
       <div className="breathe relative h-full w-full">
         <Image
           src="/logo.png"
@@ -49,7 +48,7 @@ export function HeroLogo({ ringRef }: { ringRef: React.RefObject<RingHandle | nu
             d="M 653.6 211 A 324 324 0 1 0 125 581"
             fill="none"
             stroke="#8cffbe"
-            strokeWidth="26"
+            strokeWidth="23"
             strokeLinecap="round"
             pathLength={100}
             strokeDasharray="100"
@@ -57,7 +56,7 @@ export function HeroLogo({ ringRef }: { ringRef: React.RefObject<RingHandle | nu
             style={{
               opacity: 0,
               transition: "opacity 0.6s ease",
-              filter: "drop-shadow(0 0 10px rgba(0,216,106,0.7))",
+              filter: "drop-shadow(0 0 4px rgba(0,216,106,0.45))",
             }}
           />
         </svg>

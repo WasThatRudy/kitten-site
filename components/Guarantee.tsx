@@ -43,8 +43,7 @@ export function Guarantee() {
         </div>
 
         <p className="rise-reveal mt-10 max-w-[40rem] font-mono text-[13px] leading-relaxed text-dim">
-          Your data is never in only one place. The cat sleeps because it
-          checked.
+          At no point during a move is your data in only one place on the disk.
         </p>
       </div>
     </section>

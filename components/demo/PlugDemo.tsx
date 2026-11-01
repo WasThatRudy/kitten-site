@@ -78,7 +78,7 @@ function consoleScript(sim: Sim): string[] {
   return [
     "kitten recovery environment  (pre-OS, ~2 MB of Rust)",
     again
-      ? "power lost again. bold. checking the journal."
+      ? "power lost again. reading the journal again."
       : "no operating system yet. no USB stick. just the mover.",
     "reading journal at lba 2048 ... found, intact",
     "Kitten recovery: rearranging your disk ...",
@@ -202,7 +202,7 @@ export function PlugDemo({
   const [entries, setEntries] = useState<Entry[]>([]);
   const [consoleLines, setConsoleLines] = useState<string[] | null>(null);
   const [cut, setCut] = useState(false);
-  const [status, setStatus] = useState("drag the boundary, plan a resize");
+  const [status, setStatus] = useState("drag the white boundary to plan a resize");
   const [reduced, setReduced] = useState(false);
   const entryId = useRef(0);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -292,7 +292,7 @@ export function PlugDemo({
       setCut(false);
       ringRef?.current?.set(0, false);
       go("idle");
-      setStatus("drag the boundary, plan a resize");
+      setStatus("drag the white boundary to plan a resize");
     },
     [go, ringRef]
   );
@@ -309,6 +309,8 @@ export function PlugDemo({
       s.split = s.target;
       go("done");
       setStatus(`${CHUNKS}/${CHUNKS} chunks verified. Every byte intact.`);
+      ringRef?.current?.set(1, true);
+      later(() => ringRef?.current?.set(1, false), 2600);
       if (s.attract) {
         later(() => {
           if (sim.current.attract && !sim.current.touched) resetDemo(true);
@@ -330,7 +332,7 @@ export function PlugDemo({
       setCut(false);
       setConsoleLines(consoleScript(s));
       go("console");
-      setStatus("power is back. the journal remembers.");
+      setStatus("power restored. reading the journal.");
     }, reduced ? 500 : 1300);
   }, [go, later, push, reduced]);
 
@@ -464,7 +466,7 @@ export function PlugDemo({
     else {
       s.handle = s.split;
       go("idle");
-      setStatus("drag further. a real resize, not a nudge.");
+      setStatus("too small to bother. drag at least 20 GB.");
     }
   }, [go, startPlan]);
 
@@ -566,10 +568,6 @@ export function PlugDemo({
           (s.committed + Math.max(0, Math.min(1, s.flight))) / CHUNKS,
           true
         );
-      }
-      if (s.phase === "done" && s.tableSnap < 1) s.tableSnap = Math.min(1, s.tableSnap + dt / 450);
-      if (s.phase !== "moving" && s.phase !== "cut" && s.phase !== "console") {
-        if (s.phase === "done") ringRef?.current?.set(1, true);
       }
       if (s.tableSnap < 1) s.tableSnap = Math.min(1, s.tableSnap + dt / 450);
       s.hintT += dt / 1000;
@@ -810,14 +808,14 @@ export function PlugDemo({
           {/* journal ledger */}
           <div className="flex min-h-[120px] flex-col border-t border-line-faint md:border-t-0 md:border-l">
             <div className="border-b border-line-faint px-4 py-2 font-mono text-[10px] text-faint">
-              journal, lba 2048. survives everything.
+              journal @ lba 2048
             </div>
             <div
               ref={journalRef}
               className="h-[120px] flex-1 overflow-y-auto px-4 py-2 font-mono text-[10.5px] leading-[1.9] md:h-auto md:max-h-[156px]"
             >
               {entries.length === 0 && (
-                <span className="text-faint">empty. nothing planned yet.</span>
+                <span className="text-faint">no entries yet</span>
               )}
               {entries.map((e) => (
                 <div

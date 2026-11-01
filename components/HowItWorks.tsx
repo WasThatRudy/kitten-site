@@ -172,7 +172,7 @@ export function HowItWorks() {
       <div className="rise-reveal">
         <p className="font-mono text-[12px] text-faint">$ kitten plan --explain</p>
         <h2 className="mt-3 text-[clamp(1.9rem,4vw,3rem)] leading-[1.08] font-bold tracking-tight text-balance">
-          One reboot. Six quiet steps.
+          One reboot. Six steps.
         </h2>
       </div>
 

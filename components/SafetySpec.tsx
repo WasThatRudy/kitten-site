@@ -57,9 +57,8 @@ export function SafetySpec() {
       </dl>
 
       <p className="mt-10 font-mono text-[12px] leading-relaxed text-faint">
-        honesty clause: Kitten is under active development. the spec is strict,
-        the tests are mean, and it is still not yet for a disk you can&apos;t
-        lose. today that means VMs and machines you can reinstall.
+        Kitten is under active development. run it on VMs and machines you can
+        reinstall, not yet on a disk you can&apos;t lose.
       </p>
     </section>
   );

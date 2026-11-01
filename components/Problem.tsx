@@ -48,7 +48,7 @@ export function Problem() {
             </div>
           </div>
           <p className="mt-5 text-center font-mono text-[12px] leading-relaxed text-faint">
-            the industry-standard pep talk. hold your breath for two hours.
+            the industry standard, since 2004.
           </p>
         </div>
 

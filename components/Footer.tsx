@@ -31,7 +31,7 @@ cd Kitten && cargo build --release   # then point it at a disk you can lose`}</c
 
       <div className="mt-20 flex flex-col gap-3 border-t border-line-faint pt-6 font-mono text-[11.5px] text-faint sm:flex-row sm:items-center sm:justify-between">
         <span>kitten. GPL-3.0. under active development.</span>
-        <span>a pointblank club project. the cat is sleeping, not idle.</span>
+        <span>a pointblank club project</span>
       </div>
     </footer>
   );
