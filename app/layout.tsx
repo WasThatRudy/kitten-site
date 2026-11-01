@@ -24,7 +24,22 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Kitten",
     description:
-      "Resize your disk. Pull the plug. The cat doesn't flinch. Crash-safe in-place partition moving, journaled end to end.",
+      "Crash-safe in-place partition moving: one reboot, no live USB, journaled end to end. A power cut mid-move loses nothing.",
+    type: "website",
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "Resize your disk. Pull the plug. The cat doesn't flinch.",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Kitten",
+    description:
+      "Crash-safe in-place partition moving: one reboot, no live USB, journaled end to end.",
     images: ["/og.png"],
   },
 };
