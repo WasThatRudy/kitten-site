@@ -71,37 +71,16 @@ function makeOrder(movingLeft: boolean): number[] {
 /* recovery console                                                    */
 /* ------------------------------------------------------------------ */
 
-function consoleScript(sim: Sim): string[] {
-  const durable = sim.committed;
-  const next = Math.min(durable + 1, CHUNKS);
-  if (sim.pulls > 1) {
-    return [
-      "Kitten recovery: rearranging your disk.",
-      `Power lost again. Reading the journal … chunk ${durable} of ${CHUNKS} was durable.`,
-      `Resuming at chunk ${next}.`,
-    ];
-  }
-  return [
-    "Kitten recovery: rearranging your disk.",
-    "If the power goes out, just turn the computer back on. Kitten will continue.",
-    "Working on /dev/nvme0n1.",
-    `Reading the journal … chunk ${durable} of ${CHUNKS} was durable.`,
-    `Resuming at chunk ${next}.`,
-  ];
-}
-
 function RecoveryConsole({
-  lines,
-  progress,
+  durable,
   instant,
   onDone,
 }: {
-  lines: string[];
-  progress: number; // 0..1, durable fraction shown on the recovery progress bar
+  durable: number; // chunks journaled before the cut
   instant: boolean;
   onDone: () => void;
 }) {
-  const [shown, setShown] = useState<number>(instant ? lines.length : 0);
+  const [stage, setStage] = useState(instant ? 3 : 0);
   const doneRef = useRef(onDone);
   useEffect(() => {
     doneRef.current = onDone;
@@ -112,53 +91,59 @@ function RecoveryConsole({
       const t = setTimeout(() => doneRef.current(), 1400);
       return () => clearTimeout(t);
     }
-    let i = 0;
-    let cancelled = false;
-    let timer: ReturnType<typeof setTimeout>;
-    const tick = () => {
-      if (cancelled) return;
-      if (i >= lines.length) {
-        timer = setTimeout(() => doneRef.current(), 1000);
-        return;
-      }
-      i++;
-      setShown(i);
-      timer = setTimeout(tick, 480);
-    };
-    timer = setTimeout(tick, 200);
-    return () => {
-      cancelled = true;
-      clearTimeout(timer);
-    };
-  }, [lines, instant]);
+    const timers = [
+      setTimeout(() => setStage(1), 350),
+      setTimeout(() => setStage(2), 800),
+      setTimeout(() => setStage(3), 1250),
+      setTimeout(() => doneRef.current(), 2900),
+    ];
+    return () => timers.forEach(clearTimeout);
+  }, [instant]);
+
+  const pct = Math.round((durable / CHUNKS) * 100);
+  const movedGB = Math.round(durable * ((MEDIA_USED * DISK_GB) / CHUNKS));
+  const totalGB = gb(MEDIA_USED);
 
   return (
     <div
-      className="absolute inset-0 z-10 flex flex-col justify-center bg-black px-5 font-mono text-[12px] leading-[1.9] text-ink/90 sm:px-7 sm:text-[13px]"
+      className="absolute inset-0 z-10 flex flex-col justify-center bg-black px-5 font-mono text-[11.5px] leading-[1.8] sm:px-7 sm:text-[12.5px]"
       role="log"
       aria-live="polite"
     >
-      {lines.slice(0, shown).map((l, i) => (
-        <div key={i}>
-          {l}
-          {i === shown - 1 && shown < lines.length && (
-            <span className="cursor-blink ml-0.5 inline-block h-[1em] w-[0.55em] translate-y-[2px] bg-ink/80" />
-          )}
+      <div style={{ opacity: stage >= 1 ? 1 : 0 }} className="transition-opacity duration-200">
+        <div className="font-bold text-ink">Kitten recovery</div>
+        <div className="text-dim">
+          moving your partitions, before any operating system starts
         </div>
-      ))}
-      {shown >= lines.length && (
-        <div className="mt-4 flex items-center gap-3">
-          <div className="h-[6px] flex-1 overflow-hidden rounded-full bg-ink/15">
-            <div
-              className="h-full rounded-full bg-green transition-[width] duration-700"
-              style={{ width: `${Math.round(progress * 100)}%` }}
-            />
+      </div>
+
+      <div className="my-3 w-3/4 border-t border-ink/25" style={{ opacity: stage >= 2 ? 1 : 0 }} />
+
+      <div style={{ opacity: stage >= 2 ? 1 : 0 }} className="transition-opacity duration-200">
+        <div className="flex items-center gap-3">
+          <div className="h-[10px] w-44 bg-ink/15 sm:w-56">
+            <div className="h-full bg-green" style={{ width: `${pct}%` }} />
           </div>
-          <span className="text-[11px] text-dim">
-            {Math.round(progress * 100)}%
-          </span>
+          <span className="text-ink">{pct}%</span>
         </div>
-      )}
+        <div className="mt-1.5 text-ink">
+          {movedGB} GB of {totalGB} GB moved
+        </div>
+        <div className="text-dim">
+          chunk {durable} of {CHUNKS} copied, flushed, verified, journaled
+        </div>
+      </div>
+
+      <div className="my-3 w-3/4 border-t border-ink/25" style={{ opacity: stage >= 3 ? 1 : 0 }} />
+
+      <div
+        style={{ opacity: stage >= 3 ? 1 : 0 }}
+        className="text-green transition-opacity duration-200"
+      >
+        Power cut? Rude, but fine. Turn the computer back on.
+        <br />
+        Kitten resumes from the last verified chunk. No drama.
+      </div>
     </div>
   );
 }
@@ -249,10 +234,9 @@ export function PlugDemo({
 
   const [phase, setPhase] = useState<Phase>("idle");
   const [entries, setEntries] = useState<Entry[]>([]);
-  const [consoleData, setConsoleData] = useState<{
-    lines: string[];
-    progress: number;
-  } | null>(null);
+  const [consoleData, setConsoleData] = useState<{ durable: number } | null>(
+    null
+  );
   const [pullCount, setPullCount] = useState(0);
   const [cut, setCut] = useState(false);
   const [status, setStatus] = useState("drag the white boundary to plan a resize");
@@ -385,10 +369,7 @@ export function PlugDemo({
     setPullCount(s.pulls);
     later(() => {
       setCut(false);
-      setConsoleData({
-        lines: consoleScript(s),
-        progress: s.committed / CHUNKS,
-      });
+      setConsoleData({ durable: s.committed });
       go("console");
       setStatus("power restored.");
     }, reduced ? 500 : 1300);
@@ -861,15 +842,6 @@ export function PlugDemo({
               )}
             </div>
 
-            {consoleData && (
-              <RecoveryConsole
-                lines={consoleData.lines}
-                progress={consoleData.progress}
-                instant={reduced}
-                onDone={onConsoleDone}
-              />
-            )}
-
             {done && (
               <DoneScreen movedGB={gb(MEDIA_USED)} pulls={pullCount} />
             )}
@@ -945,6 +917,17 @@ export function PlugDemo({
             )}
           </div>
         </div>
+
+        {/* recovery owns the whole screen */}
+        {consoleData && (
+          <div className="absolute inset-0 z-20">
+            <RecoveryConsole
+              durable={consoleData.durable}
+              instant={reduced}
+              onDone={onConsoleDone}
+            />
+          </div>
+        )}
 
         {/* the screen loses power */}
         {cut && (
