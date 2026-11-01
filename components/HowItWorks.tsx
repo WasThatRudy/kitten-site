@@ -91,10 +91,10 @@ function MiniDisk({ step }: { step: number }) {
               width: `${CW - 0.9}%`,
               background:
                 i < movedCount
-                  ? "rgba(244,246,245,0.75)"
+                  ? "color-mix(in srgb, var(--color-ink) 75%, transparent)"
                   : i === flying
-                    ? "rgba(244,246,245,0.95)"
-                    : "rgba(244,246,245,0.4)",
+                    ? "color-mix(in srgb, var(--color-ink) 95%, transparent)"
+                    : "color-mix(in srgb, var(--color-ink) 40%, transparent)",
               transform: i === flying ? "translateY(-16px)" : "none",
             }}
           />
