@@ -25,12 +25,12 @@ export function Footer() {
         </div>
         <pre className="screen mt-8 overflow-x-auto rounded-md border border-line-faint bg-[#030403] px-4 py-3 font-mono text-[12px] leading-relaxed text-dim">
           <code>{`git clone https://github.com/pointblank-club/Kitten
-cd Kitten && cargo build --release   # then point it at a disk you can lose`}</code>
+cd Kitten && cargo build --release`}</code>
         </pre>
       </div>
 
       <div className="mt-20 flex flex-col gap-3 border-t border-line-faint pt-6 font-mono text-[11.5px] text-faint sm:flex-row sm:items-center sm:justify-between">
-        <span>kitten. GPL-3.0. under active development.</span>
+        <span>kitten. free software, GPL-3.0.</span>
         <span>a pointblank club project</span>
       </div>
     </footer>

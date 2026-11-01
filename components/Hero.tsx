@@ -218,9 +218,9 @@ export function Hero() {
                 </a>
               </Magnetic>
               <p className="font-mono text-[12px] text-faint">
-                under active development.
-                <br className="hidden lg:block" /> not yet for a disk you
-                can&apos;t lose.
+                free software, GPL-3.0.
+                <br className="hidden lg:block" /> read every line before it
+                touches a byte.
               </p>
             </div>
           </div>

@@ -19,7 +19,7 @@ const jetbrains = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Kitten, the partition mover that survives a power cut",
   description:
-    "Kitten resizes and moves disk partitions in place, in one reboot, with no live USB. Every step is journaled, so pulling the plug mid-move loses nothing. Open source, GPL-3.0, written in Rust. Under active development.",
+    "Kitten resizes and moves disk partitions in place, in one reboot, with no live USB. Every step is journaled, so pulling the plug mid-move loses nothing. Open source, GPL-3.0, written in Rust.",
   metadataBase: new URL("https://kitten-site-blue.vercel.app"),
   openGraph: {
     title: "Kitten",

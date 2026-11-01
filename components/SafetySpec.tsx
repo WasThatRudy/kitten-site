@@ -56,10 +56,6 @@ export function SafetySpec() {
         <div className="border-t border-line-faint" />
       </dl>
 
-      <p className="mt-10 font-mono text-[12px] leading-relaxed text-faint">
-        Kitten is under active development. run it on VMs and machines you can
-        reinstall, not yet on a disk you can&apos;t lose.
-      </p>
     </section>
   );
 }

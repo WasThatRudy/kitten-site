@@ -47,9 +47,6 @@ export function Migration() {
             hardware while it keeps working, then cut over to a verified,
             byte-for-byte copy. Same journal discipline, bigger jump.
           </p>
-          <p className="mt-4 font-mono text-[12px] text-faint">
-            in development, not released yet.
-          </p>
         </div>
         <div ref={ref} className="h-[320px] w-full sm:h-[400px]">
           {mounted && <ServerStack3D animate={animate} />}

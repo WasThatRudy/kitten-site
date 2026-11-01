@@ -27,5 +27,5 @@ Static-friendly Next.js app; deploys as-is to Vercel or Netlify. No environment 
 ## Notes
 
 - Brand palette: `#000`, `#F4F6F5`, and signal green `#00D86A` (sampled from the logo).
-- Copy is deliberately honest: Kitten is under active development; the page never claims encrypted transport or production readiness, and marks machine-to-machine migration as coming soon.
+- The page never claims encrypted transport for migration (it is marked coming soon) and avoids unverifiable reliability claims.
 - This repo is a standalone personal project intended to be transferred to the `pointblank-club` org later. Nothing org-specific is hardcoded beyond public repo links.
